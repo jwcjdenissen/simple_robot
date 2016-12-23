@@ -1,0 +1,22 @@
+<launch>
+
+	<!-- Apply Xacro to create urdf  -->
+	<param name="use_gui" value="true" />
+
+	<param name="robot_description"
+		command="$(find xacro)/xacro --inorder '$(find simple_robot_description)/urdf/simple_robot.xacro'" />
+
+		<!-- Send joint values with ros parameter server -->
+		<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+			<rosparam file="$(find simple_robot_description)/config/initial.yaml"/> 
+		</node>
+
+		<!-- Combine joint values -->
+		<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+		</node>
+
+		<!-- Show in Rviz   -->
+		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find simple_robot_description)/launch/simple_robot_rviz.rviz">
+		</node>
+
+	</launch>

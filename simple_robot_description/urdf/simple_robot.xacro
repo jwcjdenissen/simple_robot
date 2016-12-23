@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+
+<!-- Simple robot model model -->
+<robot name="simple_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Some constants -->
+  <xacro:property name="Pi" value="${3.1415926535897931}"/>
+  <xacro:property name="link_width" value="0.05" />
+  <xacro:property name="link_length" value="0.5" />
+  <!-- <xacro:property name="link_mass" value="9.375" /> -->
+  <xacro:property name="link_mass" value="${link_width*link_width*link_length*7800}" />
+  <xacro:property name="base_radius" value="0.10" />
+  <xacro:property name="base_height" value="0.25" />
+  <xacro:property name="base_mass" value="${Pi*base_radius*base_radius*base_height*7800}" />
+
+  <!-- Some esthetic color definitions -->
+  <xacro:include filename="$(find simple_robot_description)/urdf/materials.xacro" />
+
+  <!-- Some xacro macro definitions -->
+  <xacro:include filename="$(find simple_robot_description)/urdf/definitions.xacro" />
+
+  <!-- Import Gazebo components for now colors and control plugin -->
+  <xacro:include filename="$(find simple_robot_description)/urdf/simple_robot.gazebo" />
+
+  <!-- Link definitions -->
+
+  <link name="world">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link>
+
+  <link name="link_0">
+    <visual>
+      <origin xyz="0 0 ${base_height/2}" rpy="0 0 0" />
+      <geometry>
+       <cylinder radius="${base_radius}" length ="${base_height}"/>
+     </geometry>
+     <material name="red_transparent"/>
+   </visual>
+   <inertial>
+    <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+    <mass value="${base_mass}"/>
+    <inertia
+      ixx="${(base_mass*base_radius*base_radius)/4 + 
+      (base_mass*base_height*base_height)/12}" 
+      ixy="0.0" ixz="0.0"
+      iyy="${(base_mass*base_radius*base_radius)/4 + 
+      (base_mass*base_height*base_height)/12}" 
+      iyz="0.0"
+      izz="${(base_mass*base_radius*base_radius)/2}"/>
+    </inertial>
+  </link>
+
+  <link name="link_1">
+    <visual>
+      <origin xyz="${link_length/2} 0 0"  rpy="0 ${Pi/2} 0" />
+      <geometry>
+       <box size="${link_width} ${link_width} ${link_length}"/>
+     </geometry>
+     <material name="white_transparent"/>
+   </visual>
+   <inertial>
+    <origin xyz="${link_length/2} 0 0" rpy="0 ${Pi/2} 0"/>
+    <mass value="${link_mass}"/>
+    <inertia
+      ixx="${(link_mass/12.0) * (link_width*link_width + link_length*link_length)}" ixy="0.0" ixz="0.0"
+      iyy="${(link_mass/12.0) * (link_width*link_width + link_length*link_length)}" iyz="0.0"
+      izz="${(link_mass/12.0) * (2 * link_width*link_width)}"/>
+    </inertial>
+  </link>
+
+  <link name="link_2">
+    <visual>
+      <origin xyz="${link_length/2} 0 0"  rpy="0 ${Pi/2} 0" />
+      <geometry>
+       <box size="${link_width} ${link_width} ${link_length}"/>
+     </geometry>
+     <material name="white_transparent"/>
+   </visual>
+   <inertial>
+    <origin xyz="${link_length/2} 0 0" rpy="0 ${Pi/2} 0"/>
+    <mass value="${link_mass}"/>
+    <inertia
+      ixx="${(link_mass/12.0) * (link_width*link_width + link_length*link_length)}" ixy="0.0" ixz="0.0"
+      iyy="${(link_mass/12.0) * (link_width*link_width + link_length*link_length)}" iyz="0.0"
+      izz="${(link_mass/12.0) * (2 * link_width*link_width)}"/>
+    </inertial>
+  </link>
+
+  <link name="link_4">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link>
+
+  <link name="link_3">
+    <visual>
+      <origin xyz="${link_length/2} 0 0"  rpy="0 ${Pi/2} 0" />
+      <geometry>
+       <box size="${link_width} ${link_width} ${link_length}"/>
+     </geometry>
+     <material name="white_transparent"/>
+   </visual>
+   <inertial>
+    <origin xyz="${link_length/2} 0 0" rpy="0 ${Pi/2} 0"/>
+    <mass value="${link_mass}"/>
+    <inertia
+      ixx="${(link_mass/12.0) * (link_width*link_width + link_length*link_length)}" ixy="0.0" ixz="0.0"
+      iyy="${(link_mass/12.0) * (link_width*link_width + link_length*link_length)}" iyz="0.0"
+      izz="${(link_mass/12.0) * (2 * link_width*link_width)}"/>
+    </inertial>
+  </link>
+
+  <!-- Joint definitions -->
+
+  <joint name="joint_0" type="continuous">
+    <parent link="world"/>
+    <child link="link_0"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="50.0"/>
+    <dynamics friction="0.0"/>
+    <dynamics spring_reference="0.0"/>
+    <dynamics spring_stiffness="10.0"/>
+  </joint>
+
+  <joint name="joint_1" type="continuous">
+    <parent link="link_0"/>
+    <child link="link_1"/>
+    <origin xyz="0 0 ${base_height}" rpy="${Pi/2} 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="50.0"/>
+    <dynamics friction="0.0"/>
+    <dynamics spring_reference="0.0"/>
+    <dynamics spring_stiffness="10.0"/>
+  </joint>
+
+  <joint name="joint_2" type="continuous">
+    <parent link="link_1"/>
+    <child link="link_2"/>
+    <origin xyz="${link_length} 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="50.0"/>
+    <dynamics friction="0.0"/>
+    <dynamics spring_reference="0.0"/>
+    <dynamics spring_stiffness="10.0"/>
+  </joint>
+
+  <joint name="joint_3" type="continuous">
+    <parent link="link_2"/>
+    <child link="link_3"/>
+    <origin xyz="${link_length} 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="50.0"/>
+    <dynamics friction="0.0"/>
+    <dynamics spring_reference="0.0"/>
+    <dynamics spring_stiffness="10.0"/>
+  </joint>
+
+  <joint name="joint_4" type="fixed">
+    <parent link="link_3"/>
+    <child link="link_4"/>
+    <origin xyz="${link_length} 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <dynamics damping="50.0"/>
+    <dynamics friction="0.0"/>
+    <dynamics spring_reference="0.0"/>
+    <dynamics spring_stiffness="10.0"/>
+  </joint>
+
+  <transmission name="joint_0_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint_0">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="joint_0_actuator">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>
